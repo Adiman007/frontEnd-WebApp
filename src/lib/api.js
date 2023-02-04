@@ -10,22 +10,25 @@ async function send({ method, path, data, token }) {
         opts.body = JSON.stringify(data);
     }
     if (token) {
-        opts.headers['Authorization'] = `Bearer ${token}`;
+        opts.headers['Authorization'] = 'Bearer ' + token;
     }
- console.log(opts)
     const res = await fetch(`${base}/${path}`, opts);
     if (res.ok || res.status === 422) {
         const text = await res.text();
         return text ? JSON.parse(text) : {};
     }
+
     if(res.status === 401){
-        throw redirect(302, `/login`);
+        throw redirect(302, '/login');
     }
     if(res.status === 403){
-        throw redirect(302, `/login`);
+        throw redirect(302, '/login');
     }
     if(res.status === 400){
-        throw redirect(302, `/login`);
+        throw redirect(302, '/login');
+    }
+    if(res.status === 404){
+        throw redirect(302, '/login');
     }
 
     throw error(res.status);
@@ -43,6 +46,6 @@ export function post(path, data, token) {
     return send({ method: 'POST', path, data, token });
 }
 
-export function put(path, data, token) {
-    return send({ method: 'PUT', path, data, token });
+export function patch(path, data, token) {
+    return send({ method: 'PATCH', path, data, token });
 }

@@ -1,10 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import * as api from '$lib/api.js';
 
-export const load = (async ({ locals }) => {
-    if (locals.user) throw redirect(307, '/');
-})
-
+/** @type {import('./$types').PageServerLoad} */
+export async function load({params,cookies }) {
+    if (cookies) {
+        cookies.delete("jwt")
+    }
+}
 /** @type {import('./$types').Actions} */
 export const actions = {
     default: async ({ cookies, request }) => {
